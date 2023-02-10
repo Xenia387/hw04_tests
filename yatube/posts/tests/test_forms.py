@@ -1,13 +1,8 @@
 from http import HTTPStatus
-import shutil
-import tempfile
 
-from posts.forms import PostForm
 from posts.models import Post, Group
 from django.contrib.auth import get_user_model
-from django.conf import settings
-from django.core.files.uploadedfile import SimpleUploadedFile
-from django.test import Client, TestCase, override_settings
+from django.test import Client, TestCase
 from django.urls import reverse
 
 User = get_user_model()
