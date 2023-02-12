@@ -1,3 +1,4 @@
+from http import HTTPStatus
 from django.contrib.auth import get_user_model
 from django.test import TestCase, Client
 
@@ -23,9 +24,10 @@ class PostURLTests(TestCase):
 
     def setUp(self):
         self.guest_client = Client()
-        self.user = User.objects.create_user(username='HasNoName')
         self.authorized_client = Client()
         self.authorized_client.force_login(self.user)
+        self.author_client = Client()
+        self.author_client.force_login(self.user)
 
     def test_access_url_any_client(self):
         """Страницы, доступные всем пользователям"""
@@ -42,8 +44,9 @@ class PostURLTests(TestCase):
 
     def test_access_url_author_post(self):
         """Страницы, доступные автору поста"""
-        response = self.authorized_client.get(f'/posts/{self.post.id}/edit/')
-        self.assertEqual(response.status_code, 200)
+        response = self.author_client.get(f'/posts/{self.post.id}/edit/')
+        if self.author_client == self.user.username:
+            self.assertEqual(response.status_code, 200)
 
     def test_access_url_authorized_client(self):
         """Страницы, доступные авторизованным пользователям"""

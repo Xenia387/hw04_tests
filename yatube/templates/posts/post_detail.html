@@ -9,10 +9,10 @@
         </li>  
         <li class="list-group-item">
           Автор:
-          <a href="{% url 'posts:profile' post.author %}">
-          {{ post.author.get_full_name }}
+          <a href="{% url 'posts:profile' post.author.username %}">
+          {{ post.author.username }}
           </a><br>
-            Всего постов: {{ post.author.posts.count }}
+            Всего постов: {{ post.author.get_full_name }}
         </li>
         {% if post.group %}
         <li class="list-group-item">

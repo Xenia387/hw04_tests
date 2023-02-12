@@ -22,13 +22,16 @@ class PostPagesTests(TestCase):
         )
         cls.post = Post.objects.create(
             author=cls.user,
+            group=cls.group,
             text='Тестовый пост',
         )
 
     def setUp(self):
-        self.user = User.objects.create_user(username='HasNoName')
+        self.guest_client = Client()
         self.authorized_client = Client()
         self.authorized_client.force_login(self.user)
+        self.author_client = Client()
+        self.author_client.force_login(self.user)
 
     def test_pages_uses_correct_template(self):
         """URL-адрес использует соответствующий шаблон."""
@@ -42,7 +45,7 @@ class PostPagesTests(TestCase):
             reverse('posts:post_detail', kwargs={'post_id': self.post.id}):
                 'posts/post_detail.html',
             reverse('posts:post_edit', kwargs={'post_id': self.post.id}):
-                'posts/post_edit.html',
+                'posts/post_create.html',
             reverse('posts:post_create'):
                 'posts/post_create.html',
         }
@@ -56,19 +59,24 @@ class PostPagesTests(TestCase):
         response = self.authorized_client.get(reverse('posts:index'))
         first_object = response.context['page_obj'][0]
         post_text_0 = first_object.text
-        post_group_0 = first_object.group
+        post_author_0 = first_object.author.username
+        post_group_0 = first_object.group.title
         self.assertEqual(post_text_0, 'Тестовый пост')
-        self.assertEqual(post_group_0, 'Тестовая группа')
+        self.assertEqual(post_author_0, self.user.username)
+        self.assertEqual(post_group_0, self.group.title)
 
     def test_grouplist_correct_context(self):
         """Шаблон group_list сорфмирован с правильным контекстом"""
-        response = self.authorized_client.get(reverse(
-            'posts:group_list', kwargs={'slug': self.group.slug}))
+        response = self.authorized_client.get(
+            reverse('posts:group_list', kwargs={'slug': self.group.slug})
+        )
         first_object = response.context['page_obj'][0]
         post_text_0 = first_object.text
-        post_group_0 = first_object.group
+        post_author_0 = first_object.author.username
+        post_group_0 = first_object.group.title
         self.assertEqual(post_text_0, 'Тестовый пост')
-        self.assertEqual(post_group_0, 'Тестовая группа')
+        self.assertEqual(post_author_0, self.user.username)
+        self.assertEqual(post_group_0, self.group.title)
 
     def test_profile_correct_context(self):
         """Шаблон profile сорфмирован с правильным контекстом"""
@@ -77,9 +85,11 @@ class PostPagesTests(TestCase):
         )
         first_object = response.context['page_obj'][0]
         post_text_0 = first_object.text
-        post_group_0 = first_object.group
+        post_author_o = first_object.author.username
+        post_group_0 = first_object.group.title
         self.assertEqual(post_text_0, 'Тестовый пост')
-        self.assertEqual(post_group_0, 'Тестовая группа')
+        self.assertEqual(post_author_o, self.user.username)
+        self.assertEqual(post_group_0, self.group.title)
 
     def test_postdetail_correct_context(self):
         """Шаблон post_detail сформирован с правильным контекстом."""
@@ -94,11 +104,10 @@ class PostPagesTests(TestCase):
 
     def test_editpost_correct_context(self):
         """Шаблон edit_post сорфмирован с правильным контекстом"""
-        response = self.authorized_client.get(
+        response = (self.authorized_client.get(
             reverse('posts:post_edit', kwargs={'post_id': self.post.id})
-        )
+        ))
         form_fields = {
-            'is_edit': forms.Fields.BooleanField,
             'text': forms.fields.CharField,
             'group': forms.fields.ChoiceField,
         }
@@ -128,19 +137,21 @@ class PostPagesTests(TestCase):
             author=self.user,
             group=self.group
         )
-        response = [
-            reverse('posts:index'),
-            reverse('posts:group_list',
-                    kwargs={'slug': self.group.slug}),
-            reverse('posts:profile',
-                    kwargs={'username': self.post.author}),
-        ]
-        for i in response:
-            with self.subTest(i=i):
-                response = self.authorized_client.get(i).context('page_obj')
-            self.assertIn(post, response, 'поста нет на главной странице')
-            self.assertIn(post, response, 'поста нет в профиле')
-            self.assertIn(post, response, 'поста нет в группе')
+        response_index = self.authorized_client.get(
+            reverse('posts:index')
+        )
+        response_group = self.authorized_client.get(
+            reverse('posts:group_list', kwargs={'slug': self.group.slug})
+        )
+        response_profile = self.authorized_client.get(
+            reverse('posts:profile', kwargs={'username': self.user.username})
+        )
+        index = response_index.context['page_obj']
+        group = response_group.context['page_obj']
+        profile = response_profile.context['page_obj']
+        self.assertIn(post, index, 'поста нет на главной')
+        self.assertIn(post, group, 'поста нет в профиле')
+        self.assertIn(post, profile, 'поста нет в группе')
 
 
 class PaginatorViewsTest(TestCase):
