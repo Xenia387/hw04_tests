@@ -2,6 +2,8 @@ from django.db import models
 
 from django.contrib.auth import get_user_model
 
+from core.models import CreatedModel
+
 User = get_user_model()
 ADMIN_NUMBER_OF_CHARACTERS = 15
 
@@ -30,10 +32,6 @@ class Post(models.Model):
         help_text='Текст не должен быть длиннее 700 символов',
         verbose_name='Текст'
     )
-    pub_date = models.DateTimeField(
-        auto_now_add=True,
-        verbose_name='Дата публикации'
-    )
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
@@ -48,9 +46,37 @@ class Post(models.Model):
         related_name='posts',
         verbose_name='Группа, к которой будет относиться пост',
     )
+    image = models.ImageField(
+        verbose_name='Картинка',
+        upload_to='posts/',
+        blank=True
+    )
+    pub_date = models.DateTimeField(
+        'Дата публикации',
+        auto_now_add=True,
+        null=True,
+    )
 
     class Meta:
-        ordering = ['-pub_date']
+        verbose_name = 'Пост'
+        verbose_name_plural = 'Посты'
 
     def __str__(self):
         return self.text[:ADMIN_NUMBER_OF_CHARACTERS]
+
+
+class Comment(CreatedModel):
+    post = models.ForeignKey(
+        Post,
+        on_delete=models.CASCADE,
+        related_name='comments',
+    )
+    author = models.ForeignKey(
+        User,
+        related_name='comments',
+        on_delete=models.CASCADE,
+    )
+    text = models.TextField(
+        help_text='Текст не должен быть длиннее 300 символов',
+        verbose_name='Текст'
+    )

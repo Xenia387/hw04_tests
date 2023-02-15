@@ -1,9 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 
-from ..models import Group, Post, ADMIN_NUMBER_OF_CHARACTERS
-
-User = get_user_model()
+from posts.models import ADMIN_NUMBER_OF_CHARACTERS, Group, Post, User
 
 
 class PostModelTest(TestCase):
@@ -18,11 +16,24 @@ class PostModelTest(TestCase):
         )
         cls.post = Post.objects.create(
             author=cls.user,
-            text='Тестовый пост',
+            text='Проверка обзрезки поста в админ-зоне до 15 символов',
         )
 
     def test_models_have_correct_object_names(self):
         """Проверяем, что у моделей корректно работает __str__."""
+        post = PostModelTest.post
+        expected_text = post.text[:ADMIN_NUMBER_OF_CHARACTERS]
+        group = PostModelTest.group
+        expected_title = group.title
+        tuple = (
+            (post, expected_text),
+            (group, expected_title),
+        )
+        for object, expected in tuple:
+            with self.subTest(object=object):
+                self.assertEqual(expected, str(object))
+
+    def test_1(self):
         post = PostModelTest.post
         expected_object_text = post.text[:ADMIN_NUMBER_OF_CHARACTERS]
         self.assertEqual(expected_object_text, str(post))
