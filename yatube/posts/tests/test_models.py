@@ -1,4 +1,3 @@
-from django.contrib.auth import get_user_model
 from django.test import TestCase
 
 from posts.models import ADMIN_NUMBER_OF_CHARACTERS, Group, Post, User
