@@ -62,11 +62,11 @@ cd yatube
 ```
 
 ```
-python3 manage.py makemigrations
+python manage.py makemigrations
 ```
 
 ```bash
-python3 manage.py migrate
+python manage.py migrate
 ```
 
 Автор: Анисимова Ксения
