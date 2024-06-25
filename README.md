@@ -51,8 +51,22 @@ source venv/Scripts/activate
 python -m pip install --upgrade pip
 ```
 
-```bash
+```
 pip install -r requirements.txt
+```
+
+- Выполните миграции
+
+```
+cd yatube
+```
+
+```
+python3 manage.py makemigrations
+```
+
+```bash
+python3 manage.py migrate
 ```
 
 Автор: Анисимова Ксения
