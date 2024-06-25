@@ -1,8 +1,4 @@
-# hw04_tests
-
-[![CI](https://github.com/yandex-praktikum/hw04_tests/actions/workflows/python-app.yml/badge.svg?branch=master)](https://github.com/yandex-praktikum/hw04_tests/actions/workflows/python-app.yml)
-# api_final_yatube
-Yatube - это социальная сеть.
+# Проверочные тесты проекта Yatube
 
 # Технологии
 - Python
@@ -21,7 +17,11 @@ Yatube - это социальная сеть.
 
 - Клонируйте репозиторий с проектом на свой компьютер
 ```bash
-git clone git@github.com:Xenia387/api_final_yatube.git
+git clone git@github.com:Xenia387/hw04_tests.git
+```
+
+```
+cd hw04_tests
 ```
 
 - Установите и активируйте виртуальное окружение
