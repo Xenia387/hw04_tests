@@ -2,6 +2,7 @@
 Тесты для проверки работы моделей, форм, urls-адресов и view-функций
 
 # Технологии
+- Python
 - django-debug-toolbar==2.2
 - django==2.2.16
 - pytest-django==3.8.0
@@ -46,10 +47,14 @@ source venv/Scripts/activate
 
 - Установите зависимости из файла requirements.txt
 
+```
+python -m pip install --upgrade pip
+```
+
 ```bash
 pip install -r requirements.txt
 ```
 
 Автор: Анисимова Ксения
-email: anis.xenia@yandex.ru
-telegram: @Ksenia_An_mova
+- email: anis.xenia@yandex.ru
+- telegram: @Ksenia_An_mova
