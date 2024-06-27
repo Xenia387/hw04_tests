@@ -68,20 +68,6 @@ cd yatube
 python manage.py makemigrations
 ```
 
-```
-python manage.py migrate
-```
-
-- Выполните миграции
-
-```
-cd yatube
-```
-
-```
-python manage.py makemigrations
-```
-
 ```bash
 python manage.py migrate
 ```
